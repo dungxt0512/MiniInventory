@@ -8,6 +8,7 @@
         public string? PartnerName { get; set; }
         public string Note { get; set; } = "";
         public DateTime CreatedAt { get; set; }
+        public string TransactionCode { get; set; } = "";
         public List<TransactionDetailDto> Details { get; set; } = [];
     }
 }

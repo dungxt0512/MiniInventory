@@ -17,6 +17,9 @@ namespace MiniInventory.Model.Entities
         public string Note { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        [Required]
+        [StringLength(50)]
+        public string TransactionCode { get; set; } = "";
         public ICollection<InventoryTransactionDetail> Details { get; set; } = [];
     }
 }

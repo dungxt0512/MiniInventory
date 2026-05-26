@@ -37,10 +37,6 @@ namespace MiniInventory.Controllers
             {
                 return Unauthorized(new { message = "Sai username or password" });
             }
-            if(!_passwordHelpers.VerifyPassword(request.Password, user.PasswordHash))
-            {
-                return Unauthorized(new { message = "Sai username or password" });
-            }
             var token = _jwtHelpers.generateToken(user.Id, _config["Jwt:Key"]!, _config["Jwt:Issuer"]!);
             return Ok(new UserLoginResponse
             {
@@ -48,28 +44,6 @@ namespace MiniInventory.Controllers
                 UserName = user.UserName,
                 Role = user.Role
             });
-        }
-        private string GenerateToken(User user)
-        {
-            var jwtSettings = _config.GetSection("JwtSettings");
-            var secretKey = jwtSettings["Secret"];
-            var Claims = new[]
-            {
-                new Claim("userId", user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Role, user.Role)
-            };
-            var Token = new JwtSecurityToken(
-                issuer: jwtSettings["Issuer"],
-                audience: jwtSettings["Audience"],
-                claims: Claims,
-                expires: DateTime.Now.AddHours(int.Parse(jwtSettings["ExpireHours"]!)),
-                signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(
-                    new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secretKey!)),
-                    Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256
-                )
-            );
-            return new JwtSecurityTokenHandler().WriteToken(Token);
         }
     }
 }
